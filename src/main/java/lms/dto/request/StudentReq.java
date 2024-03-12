@@ -14,6 +14,15 @@ public class StudentReq {
     private String phoneNumber;
     private String email;
     private int studyFormat;
+    private String password;
+
+    public StudentReq(String firstName, String lastName, String phoneNumber, String email, int studyFormat) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.studyFormat = studyFormat;
+    }
 
 
     public StudentResWithAll build() {

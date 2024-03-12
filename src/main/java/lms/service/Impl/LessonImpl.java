@@ -7,6 +7,7 @@ import lms.entities.Lesson;
 import lms.exceptions.NotFound;
 import lms.repository.CourseRepo;
 import lms.repository.LessonRepo;
+import lms.repository.StudentRepo;
 import lms.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
-
 public class LessonImpl implements LessonService {
     private final LessonRepo lessonRepo;
     private final CourseRepo courseRepo;

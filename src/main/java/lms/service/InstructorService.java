@@ -1,9 +1,12 @@
 package lms.service;
 
 import lms.dto.request.InstructorReq;
+import lms.dto.request.SignIn;
 import lms.dto.response.GroupResWithAll;
 import lms.dto.response.InstructorForGet;
 import lms.dto.response.InstructorResWithAll;
+import lms.dto.response.SimpleRes;
+import lms.entities.Instructor;
 
 import java.util.List;
 
@@ -25,4 +28,8 @@ public interface InstructorService {
     InstructorForGet getInst(Long instId);
 
     String assignToCourse(Long instId, Long courseId);
+
+    SimpleRes signUp(InstructorReq instructorReq);
+
+    Instructor signIn(SignIn signIn);
 }

@@ -9,12 +9,10 @@ import lms.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.List;
-
 @RestController
 @RequestMapping("/company/api")
 @RequiredArgsConstructor
@@ -24,6 +22,7 @@ public class CompanyApi {
 
 
     //CRUD
+    @Secured("ADMIN")
     @PostMapping("/save")
     public CompanyRes save(@RequestBody CompanyReq company) {
         if (!companyService.checkUniqName(company.getName())) {
@@ -33,32 +32,35 @@ public class CompanyApi {
             return new CompanyRes("This name already exists:  " +  company.getName());
         }
     }
-
+    @Secured({"ADMIN","INSTRUCTOR"})
     @GetMapping("/getAll")
     public List<CompanyRes> getAll() {
         return companyService.getAllCompanies();
     }
-
+    @Secured("ADMIN")
     @GetMapping("/findById/{id}")
     public CompanyRes getCompanyById(@PathVariable Long id) {
         return companyService.findById(id);
     }
 
-
+    @Secured("ADMIN")
     @PutMapping("/update/{id}")
     public String update(@RequestBody CompanyReq company, @PathVariable Long id) {
         return companyService.update(company, id);
     }
+    @Secured("ADMIN")
 
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         return companyService.remove(id);
     }
     //UNIQ
+    @Secured("ADMIN")
     @GetMapping("/getInfo/{compId}")
     public CompanyForGet getInfo(@PathVariable Long compId){
        return companyService.getInfo(compId);
     }
+    @Secured("ADMIN")
     @GetMapping("/groupByFormat/{compId}")
     public List<StudentResWithAll> groupBy(@PathVariable Long compId){
         return companyService.groupByFormat(compId);

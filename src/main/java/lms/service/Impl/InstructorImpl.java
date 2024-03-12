@@ -1,18 +1,25 @@
 package lms.service.Impl;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lms.dto.request.InstructorReq;
+import lms.dto.request.SignIn;
 import lms.dto.response.GroupResWithAll;
 import lms.dto.response.InstructorForGet;
 import lms.dto.response.InstructorResWithAll;
+import lms.dto.response.SimpleRes;
 import lms.entities.Company;
 import lms.entities.Course;
 import lms.entities.Instructor;
+import lms.entities.Role;
 import lms.exceptions.NotFound;
 import lms.repository.CompanyRepo;
 import lms.repository.CourseRepo;
 import lms.repository.InstructorRepo;
+import lms.repository.StudentRepo;
 import lms.service.InstructorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +33,8 @@ public class InstructorImpl implements InstructorService {
     private final InstructorRepo instructorRepo;
     private final CompanyRepo companyRepo;
     private final CourseRepo courseRepo;
+    private final PasswordEncoder passwordEncoder;
+    private final StudentRepo studentRepo;
 
     @Override
     public InstructorResWithAll save(InstructorReq instructorReq) {
@@ -99,12 +108,32 @@ public class InstructorImpl implements InstructorService {
         return new InstructorForGet(instructor.getFirstName(), instructor.getLastName(), instructor.getPhoneNumber(), instructor.getSpecialization(), instructorRepo.getStudCount(instId), instructorRepo.getGroupName(instId));
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public String assignToCourse(Long instId, Long courseId) {
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new NotFound(courseId));
         Instructor instructor = instructorRepo.findById(instId).orElseThrow(() -> new NotFound(instId));
         course.setInstructor(instructor);
         instructor.getCourses().add(course);
         return "Success";
+    }
+
+    @Override
+    public SimpleRes signUp(InstructorReq instructorReq) {
+        if(instructorRepo.existsByEmail(instructorReq.getEmail())) return new SimpleRes(HttpStatus.ALREADY_REPORTED,"This email already exists: " + instructorReq.getEmail());
+        if (studentRepo.existsByEmail(instructorReq.getEmail())) return new SimpleRes(HttpStatus.ALREADY_REPORTED,"This email already exists: " + instructorReq.getEmail());
+        instructorRepo.save(new Instructor(instructorReq.getFirstName(), instructorReq.getLastName(), instructorReq.getPhoneNumber(), instructorReq.getSpecialization(), instructorReq.getEmail(), passwordEncoder.encode(instructorReq.getPassword()), Role.INSTRUCTOR));
+        return new SimpleRes(HttpStatus.OK, "Success signUp");
+    }
+
+    @Override
+    public Instructor signIn(SignIn signIn) {
+        Instructor instructor = instructorRepo.signIn(signIn.getEmail());
+        if (instructor != null) {
+            if (passwordEncoder.matches(signIn.getPassword(), instructor.getPassword())) {
+                return instructor;
+            }
+        }
+        return null;
     }
 }
