@@ -9,6 +9,7 @@ import lms.entities.Group;
 import lms.exceptions.NotFound;
 import lms.repository.CourseRepo;
 import lms.repository.GroupRepo;
+import lms.repository.StudentRepo;
 import lms.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.List;
 public class GroupImpl implements GroupService {
     private final GroupRepo groupRepo;
     private final CourseRepo courseRepo;
+    private final StudentRepo studentRepo;
 
     @Override
     public GroupRes save(GroupReq groupReq) {
@@ -68,9 +70,14 @@ public class GroupImpl implements GroupService {
         return "Success";
     }
 
-    @Override
+    @Override @Transactional
     public String remove(Long id) {
-        groupRepo.delete(groupRepo.findById(id).orElseThrow(() -> new NotFound(id)));
+        Group group = groupRepo.findById(id).orElseThrow(() -> new NotFound(id));
+        group.getCourses().clear();
+        for (int i = 0; i < group.getStudents().size(); i++) {
+            studentRepo.deleteById(group.getStudents().get(i).getId());
+        }
+        groupRepo.delete(group);
         return "Success";
     }
 

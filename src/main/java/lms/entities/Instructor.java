@@ -31,6 +31,7 @@ public class Instructor extends BaseModel implements UserDetails {
     private List<Company> companies = new ArrayList<>();
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public Instructor(String firstName, String lastName, String phoneNumber, String specialization ,String email, String password,Role role) {
@@ -72,6 +73,9 @@ public class Instructor extends BaseModel implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
+    }
+    public String getName(){
+        return this.firstName + this.lastName;
     }
 
     @Override

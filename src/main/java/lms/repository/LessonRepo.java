@@ -16,4 +16,6 @@ public interface LessonRepo extends JpaRepository<Lesson,Long> {
 
     @Query("select new lms.dto.response.LessonResWithAll(l.LessonName,l.course.id,count (distinct t)) from Lesson l left join Task t on l.id = t.lesson.id where l.id =:id group by l.LessonName,l.course.id")
     LessonResWithAll myFindById(Long id);
+    @Query("select l from Lesson  l join Task t on l.id = t.lesson.id where t.id = :id")
+    Lesson findByIdTaskId(Long id);
 }

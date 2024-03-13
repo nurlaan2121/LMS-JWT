@@ -2,6 +2,7 @@ package lms.exceptions;
 
 import lms.entities.Instructor;
 import lms.entities.Student;
+import lms.exceptions.jwt.JwtFilter;
 import lms.repository.InstructorRepo;
 import lms.repository.StudentRepo;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,6 +36,8 @@ import org.springframework.stereotype.Service;
 public class SpringSecurity {
     private final StudentRepo studentRepo;
     private final InstructorRepo instructorRepo;
+    private final JwtFilter jwtFilter;
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -62,7 +66,9 @@ public class SpringSecurity {
                     .anyRequest().authenticated();
         });
         http.csrf(AbstractHttpConfigurer::disable);
-        http.httpBasic(Customizer.withDefaults());
+//        http.httpBasic(Customizer.withDefaults());
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

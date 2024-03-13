@@ -64,7 +64,6 @@ public class InstructorApi {
         return instructorService.getInst(instId);
     }
     @Secured("ADMIN")
-
     @PutMapping("/assignToCourse/{instId}/{courseId}")
     public String assignToCourse (@PathVariable Long instId,@PathVariable Long courseId){
         return instructorService.assignToCourse(instId,courseId);

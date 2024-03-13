@@ -40,5 +40,6 @@ public interface StudentRepo extends JpaRepository<Student, Long> {
 
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Student s WHERE s.email = :email")
     Boolean existsByEmail(String email);
-
+    @Query("select s from Student s where  s.email = :email")
+    Student getByEmail(String email);
 }

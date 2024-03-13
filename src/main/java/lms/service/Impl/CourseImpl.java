@@ -8,9 +8,12 @@ import lms.dto.response.CourseRes;
 import lms.dto.response.CourseResWithAll;
 import lms.entities.Company;
 import lms.entities.Course;
+import lms.entities.Group;
 import lms.exceptions.NotFound;
 import lms.repository.CompanyRepo;
 import lms.repository.CourseRepo;
+import lms.repository.GroupRepo;
+import lms.repository.StudentRepo;
 import lms.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,8 @@ import java.util.List;
 public class CourseImpl implements CourseService {
     private final CourseRepo courseRepo;
     private final CompanyRepo companyRepo;
+    private final GroupRepo groupRepo;
+    private final StudentRepo studentRepo;
 
     @Override
     public CourseRes save(CourseReq courseReq) {
@@ -90,9 +95,21 @@ public class CourseImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public String remove(Long id) {
         Course course = courseRepo.findById(id).orElseThrow(() -> new NotFound(id));
-        courseRepo.delete(course);
+        for (int i = 0; i < course.getGroups().size(); i++) {
+            Group group = groupRepo.findById(course.getGroups().get(i).getId()).get();
+            group.getCourses().remove(course);
+        }
+        for (int i = 0; i < course.getGroups().size(); i++) {
+            Group group = groupRepo.findById(course.getGroups().get(i).getId()).get();
+            for (int t = 0; t < group.getStudents().size(); t++) {
+                studentRepo.deleteById(group.getStudents().get(t).getId());
+            }
+        }
+        course.getLessons().clear();
+        courseRepo.deleteById(course.getId());
         return "Success";
     }
 

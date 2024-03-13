@@ -23,11 +23,12 @@ public class Course extends BaseModel {
     private String description;
     @ManyToOne
     private Company company;
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses",cascade = {CascadeType.ALL})
     private List<Group> groups = new ArrayList<>();
-    @OneToMany
+//    @OneToMany(cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessons = new ArrayList<>();
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REMOVE})
     private Instructor instructor;
 
     public Course(String courseName, LocalDate dateOfStart, String description) {

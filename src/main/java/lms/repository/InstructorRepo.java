@@ -1,6 +1,4 @@
 package lms.repository;
-
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lms.entities.Instructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-
 public interface InstructorRepo extends JpaRepository<Instructor, Long> {
     @Query("SELECT COUNT(DISTINCT c) FROM Instructor i JOIN i.companies c WHERE i.id = :id")
     Long getCountCompany(Long id);
@@ -34,4 +31,6 @@ public interface InstructorRepo extends JpaRepository<Instructor, Long> {
 
     @Query("select i from Instructor i where i.email = :email")
     Optional<Instructor> findByEmail(String email);
+    @Query("select i from Instructor i where i.email = :emailInst")
+    Instructor getByEmail(String emailInst);
 }

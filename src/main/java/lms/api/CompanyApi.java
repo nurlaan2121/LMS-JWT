@@ -1,5 +1,4 @@
 package lms.api;
-
 import lms.dto.request.CompanyReq;
 import lms.dto.response.CompanyForGet;
 import lms.dto.response.CompanyRes;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
@@ -49,7 +47,6 @@ public class CompanyApi {
         return companyService.update(company, id);
     }
     @Secured("ADMIN")
-
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         return companyService.remove(id);

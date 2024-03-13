@@ -32,6 +32,5 @@ public class InitialService {
         instructor.setRole(Role.INSTRUCTOR);
         instructorRepo.save(instructor);
         studentRepo.save(student);
-        studentRepo.save(cli);
     }
 }

@@ -20,7 +20,7 @@ public class Lesson extends BaseModel {
     private String LessonName;
     @ManyToOne
     private Course course;
-    @OneToMany(cascade = {CascadeType.REMOVE})
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Task> tasks = new ArrayList<>();
 
     public Lesson(String lessonName) {

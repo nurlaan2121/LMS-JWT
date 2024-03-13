@@ -18,7 +18,6 @@ public class LessonApi {
     private final LessonService lessonService;
     //CRUD
     @Secured({"ADMIN","INSTRUCTOR"})
-
     @PostMapping("/save")
     public LessonResWithAll save(@RequestBody LessonReq lessonReq) {
         return lessonService.save(lessonReq);
@@ -31,7 +30,7 @@ public class LessonApi {
         System.out.println(l.size());
         return l;
     }
-    @Secured({"ADMIN","INSTRUCTOR"})
+    @Secured({"ADMIN","INSTRUCTOR","CLIENT"})
     @GetMapping("/findById/{id}")
     public LessonResWithAll getCompanyById(@PathVariable Long id) {
         return lessonService.findById(id);

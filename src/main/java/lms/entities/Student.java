@@ -82,6 +82,9 @@ public class Student extends BaseModel implements UserDetails {
     public boolean isAccountNonLocked() {
         return true;
     }
+    public String getName(){
+       return this.firstName + this.lastName;
+    }
 
     @Override
     public boolean isCredentialsNonExpired() {

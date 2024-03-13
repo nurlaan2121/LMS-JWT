@@ -23,7 +23,7 @@ public class TaskImpl implements TaskService {
 
     @Override
     public TaskResWithAll save(TaskReq taskReq) {
-        taskRepo.save(new Task(taskReq.getName(),taskReq.getText(),taskReq.getDeadline()));
+        taskRepo.save(new Task(taskReq.getName(), taskReq.getText(), taskReq.getDeadline()));
         return taskReq.build();
     }
 
@@ -35,13 +35,14 @@ public class TaskImpl implements TaskService {
     @Override
     public TaskResWithAll findById(Long id) {
         TaskResWithAll taskResWithAll = taskRepo.myFindId(id);
-        if (taskResWithAll==null){
+        if (taskResWithAll == null) {
             throw new NotFound(id);
         }
         return taskResWithAll;
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public String update(TaskReq taskReq, Long id) {
         Task task = taskRepo.findById(id).orElseThrow(() -> new NotFound(id));
         task.setName(taskReq.getName());
@@ -51,16 +52,20 @@ public class TaskImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public String remove(Long id) {
         Task task = taskRepo.findById(id).orElseThrow(() -> new NotFound(id));
+        Lesson lesson = lessonRepo.findByIdTaskId(id);
+        lesson.getTasks().remove(task);
         taskRepo.delete(task);
         return "Success";
     }
 
-    @Override @Transactional
+    @Override
+    @Transactional
     public TaskResWithAll save2(TaskReq taskReq, Long lessonId) {
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new NotFound(lessonId));
-        Task task = new Task(taskReq.getName(),taskReq.getText(),taskReq.getDeadline());
+        Task task = new Task(taskReq.getName(), taskReq.getText(), taskReq.getDeadline());
         task.setLesson(lesson);
         taskRepo.save(task);
         lesson.getTasks().add(task);

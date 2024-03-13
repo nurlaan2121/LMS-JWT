@@ -23,7 +23,7 @@ public class TaskApi {
         return taskService.save(taskReq);
     }
 
-    @Secured({"ADMIN", "INSTRUCTOR"})
+    @Secured({"ADMIN", "INSTRUCTOR",""})
     @GetMapping("/getAll")
     public List<TaskResWithAll> getAll() {
         List<TaskResWithAll> l = taskService.getAllTasks();
@@ -31,7 +31,7 @@ public class TaskApi {
         return l;
     }
 
-    @Secured({"ADMIN", "INSTRUCTOR"})
+    @Secured({"ADMIN", "INSTRUCTOR","CLIENT"})
     @GetMapping("/findById/{id}")
     public TaskResWithAll getTaskById(@PathVariable Long id) {
         return taskService.findById(id);
